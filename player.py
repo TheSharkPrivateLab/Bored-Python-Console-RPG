@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 class Player:
-    name = "Player";
+    name = "";
     hp = 50;
     mp = 50;
     atk = 1;
-    satk = 1;
     pdef = 1;
-    sdef = 1;
-    vit = 1;
     lvl = 1;
     exp = 0;
     expRequired = 50;
@@ -24,11 +21,31 @@ class Player:
         self.enemy = enemy
     
     def attack(self):
-        if self.enemy:
+        if (self.enemy == False):
+            self.assignEnemy(Enemy("Auto Slime", 5, 5, 10));
+            
+        if (self.enemy):
             self.enemy.hp -= self.atk;
             print(self.name + " attacks and deals " + str(self.atk) + " point(s) of damages. " + self.enemy.name + " has " + str(self.enemy.hp) + " hp.");
             if (self.enemy.hp <= 0):
                 self.enemy.kill(self);
+            else:
+                self.takeDamages();
+        else:
+            print("rip lol");
+            
+    
+    def block(self):
+        self.pdef *= 2;
+        
+    def takeDamages(self):
+        damages = self.enemy.atk - self.pdef;
+        if damages < 0:
+            damages = 0;
+        self.hp -= damages;
+        if (self.hp <= 0):
+            self.hp = 0;
+            self.isAlive = False;
                 
     def addEXP(self, amount):
         self.exp += amount;
@@ -58,5 +75,6 @@ class Enemy:
         
     def kill(self, player):
         self.isAlive = False;
+        player.enemy = False;
         print(self.name + " dies! You earn " + str(self.expReward) + " XP.");
         player.addEXP(self.expReward);
